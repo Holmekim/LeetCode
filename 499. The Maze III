@@ -1,2 +1,130 @@
+#include "head.h"
+using namespace std;
 
 
+/*
+// 这一套写法解决的是那种一格一格移动的题目，但是本地的球，是一路滚下去，到达墙壁之前不会停，所以不能解决这道题
+class Solution {
+public:
+    bool IsInsideOfMap(vector<vector<int>> maze, vector<int> curPos) const {
+        if (curPos[0] < 0 || curPos[0] == maze.size() ||
+            curPos[1] < 0 || curPos[1] == maze[0].size()) {
+                return false;
+            }
+        return true;
+    }
+
+    struct Dir {
+        char dir;
+        vector<int> direct;
+    };
+
+    Dir direct[4] = {
+        {'d', {1, 0}},
+        {'l', {0, -1}},
+        {'r', {0, 1}},
+        {'u', {-1, 0}},
+    };
+
+    void GetShortestWay(vector<vector<int>>& maze, vector<int> &curPos, vector<int> hole, string &shortestWay) {
+        int cur = maze[curPos[0]][curPos[1]];
+        int next = 0;
+        if (cur == 0) {
+            return;
+        }
+
+        while(curPos != hole) {
+            // 按照字典序来遍历方向，满足要求往前插入
+            // 一定是能找到的，所以找到直接插入
+            for (auto i : direct) {
+                curPos[0] += i.direct[0];
+                curPos[1] += i.direct[1];
+                if(!IsInsideOfMap(maze, curPos)) {
+                    curPos[0] -= i.direct[0];
+                    curPos[1] -= i.direct[1];
+                    continue;
+                }
+                next = maze[curPos[0]][curPos[1]];
+                if (next == cur - 1) {
+                    cout << curPos[0] << "," << curPos[1] << "\n";
+                    shortestWay.insert(shortestWay.begin(), i.dir);
+                    break;
+                }
+            }
+        }
+    }
+
+    string findShortestWay(vector<vector<int>>& maze, vector<int>& ball, vector<int>& hole) {
+        string shortestWay = "";
+        string nok = "impossible";
+        // 判空，以及点是否在范围内
+        if (maze.size() == 0 || maze[0].size() == 0 ||
+            !IsInsideOfMap(maze, ball) ||
+            !IsInsideOfMap(maze, hole)) {
+            return nok;
+        }
+        // 起始位置hole 的值为10，后面没走一步，加一
+        maze[hole[0]][hole[1]] = 10;
+        // 广度优先，需要一个vector 来保存需要走的位置，首个元素是hole 的初始位置
+        vector<vector<int>> positions;
+        positions.push_back(hole);
+        vector<int> curPos;
+
+        // 从洞开始反向填充地图，这样从球的起始位置方便查字典序
+        while(!positions.empty()) {
+            // 出队列
+            curPos = *(positions.begin());
+            positions.erase(positions.begin());
+
+            for (int i = -1; i<= 1; i++) {
+                for (int j = -1; j<= 1; j++) {
+                    // 当前位置或者斜角位置不考虑
+                    if ((i == 0 && j == 0) || i * j != 0) {
+                        continue;
+                    }
+                    int curStep = maze[curPos[0]][curPos[1]];
+                    // 需要判断加上i j 之后是否还在范围之外
+                    curPos[0] += i;
+                    curPos[1] += j;
+                    // 在地图范围内的时候，只要下一个位置为0，或者大于当前位置的值超过1，
+                    // 则下一个位置的值覆盖为当前位置值+1，并且入队列
+                    if (IsInsideOfMap(maze, curPos) && (maze[curPos[0]][curPos[1]] == 0 ||
+                        maze[curPos[0]][curPos[1]] > curStep + 1)) {
+                        maze[curPos[0]][curPos[1]] = curStep + 1;
+                        positions.push_back(curPos);
+                    }
+                    curPos[0] -= i;
+                    curPos[1] -= j;
+                }
+            }
+        }
+        for (int indexi = 0; indexi < maze.size(); indexi++) {
+            for (int indexj = 0; indexj < maze[0].size(); indexj++) {
+                cout << maze[indexi][indexj] << " ";
+            }
+            cout << "\n";
+        }
+        curPos = ball;
+       // GetShortestWay(maze, curPos, hole, shortestWay);
+        if (shortestWay == "") {
+            return nok;
+        }
+        return shortestWay;
+    }
+};
+*/
+
+int main() {
+    vector<vector<int>> maze = {
+        {0,0,0,0,0},
+        {1,1,0,0,1},
+        {0,0,0,0,0},
+        {0,1,0,0,1},
+        {0,1,0,0,0}
+    };
+    vector<int> ball = {4,3};
+    vector<int> hole = {3,0};
+    Solution *ptr = new(Solution);
+    ptr->findShortestWay(maze, ball, hole);
+    return 1;
+}
